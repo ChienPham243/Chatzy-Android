@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.chatzy.R;
+import com.example.chatzy.adapters.UsersAdapter;
 import com.example.chatzy.databinding.ActivityGroupSearchBinding;
 import com.example.chatzy.listeners.UserListener;
 import com.example.chatzy.models.Group;
@@ -124,9 +125,9 @@ public class GroupSearchActivity extends AppCompatActivity implements UserListen
             binding.container.setRefreshing(false);
             String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
             if (task.isSuccessful() && task.getResult() != null) {
-                List<User> usersList = new ArrayList<>();
-                for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
-                    if (currentUserId.equals(queryDocumentSnapshot.getId())) {
+                List<User> users = new ArrayList<>();
+                for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                    if(currentUserId.equals(queryDocumentSnapshot.getId())) {
                         continue;
                     }
                     User user = new User();
@@ -135,9 +136,9 @@ public class GroupSearchActivity extends AppCompatActivity implements UserListen
                     user.image = queryDocumentSnapshot.getString(Constants.KEY_IMAGE);
                     user.token = queryDocumentSnapshot.getString(Constants.KEY_FCM_TOKEN);
                     user.id = queryDocumentSnapshot.getId();
-                    usersList.add(user);
+                    users.add(user);
                 }
-                getFriends(usersList);
+                getFriends(users);
             } else {
                 showErrorMessage();
             }
@@ -145,19 +146,20 @@ public class GroupSearchActivity extends AppCompatActivity implements UserListen
     }
 
     private void getFriends(List<User> usersList) {
-        FirebaseFirestore database2 = FirebaseFirestore.getInstance();
-        String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
-        database2.collection(Constants.KEY_COLLECTION_USERS).document(currentUserId).collection(Constants.KEY_COLLECTION_FRIENDS).get().addOnCompleteListener(task2 -> {
-            if (task2.isSuccessful() && task2.getResult() != null) {
-                List<User> friendsList = new ArrayList<>();
-                for (QueryDocumentSnapshot queryDocumentSnapshot2 : task2.getResult()) {
-                    User user = new User();
-                    user.id = queryDocumentSnapshot2.getString(Constants.KEY_USER_ID);
-                    friendsList.add(user);
-                }
-                setAdapterFriends(usersList, friendsList);
-            }
-        });
+//        FirebaseFirestore database2 = FirebaseFirestore.getInstance();
+//        String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
+//        database2.collection(Constants.KEY_COLLECTION_USERS).document(currentUserId).collection(Constants.KEY_COLLECTION_FRIENDS).get().addOnCompleteListener(task2 -> {
+//            if (task2.isSuccessful() && task2.getResult() != null) {
+//                List<User> friendsList = new ArrayList<>();
+//                for (QueryDocumentSnapshot queryDocumentSnapshot2 : task2.getResult()) {
+//                    User user = new User();
+//                    user.id = queryDocumentSnapshot2.getString(Constants.KEY_USER_ID);
+//                    friendsList.add(user);
+//                }
+//                setAdapterFriends(usersList, friendsList);
+//            }
+//        });
+        setAdapterFriends(usersList, usersList);
     }
 
     private void setAdapterFriends(List<User> usersList, List<User> friendsList) {
