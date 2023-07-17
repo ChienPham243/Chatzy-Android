@@ -1,5 +1,6 @@
 package com.example.chatzy.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 
@@ -53,10 +54,16 @@ public class MainActivity extends BaseActivity  {
             return true;
         });
         getFriendRequests();
+        setListener();
     }
 
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void setListener() {
+        binding.fabNewChat.setOnClickListener(v ->
+                startActivity(new Intent(getApplicationContext(),UsersActivity.class)));
     }
 
     private void getFriendRequests() {
