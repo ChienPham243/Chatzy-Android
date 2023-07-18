@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.chatzy.R;
@@ -26,7 +27,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 public class MainActivity extends BaseActivity  {
 
     private ActivityMainBinding binding;
-    FriendsFragment friendsFragment = new FriendsFragment();
 
     BottomNavigationView bottomNavigationView;
     MainFragment mainFragment = new MainFragment();
@@ -53,12 +53,9 @@ public class MainActivity extends BaseActivity  {
             getFriendRequests();
             return true;
         });
+        bottomNavigationView.setVisibility(View.GONE);
         getFriendRequests();
         setListener();
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void setListener() {

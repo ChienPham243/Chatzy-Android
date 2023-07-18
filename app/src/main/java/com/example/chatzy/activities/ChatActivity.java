@@ -456,9 +456,9 @@ public class ChatActivity extends AppCompatActivity {
 //            startActivity(intent);
 //        });
 
-//        binding.imageInfo.setOnClickListener(v -> {
-//            intentInfoChatActivity();
-//        });
+        binding.imageInfo.setOnClickListener(v -> {
+            intentInfoChatActivity();
+        });
 
         binding.imageProfile.setOnClickListener(v -> {
             intentInfoChatActivity();

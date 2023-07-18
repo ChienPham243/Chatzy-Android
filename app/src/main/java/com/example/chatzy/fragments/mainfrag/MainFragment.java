@@ -27,6 +27,7 @@ import com.example.chatzy.R;
 import com.example.chatzy.activities.ChatActivity;
 import com.example.chatzy.activities.ChatGroupActivity;
 import com.example.chatzy.activities.ProfileActivity;
+import com.example.chatzy.activities.SignInActivity;
 import com.example.chatzy.adapters.RecentConversationsAdapter;
 import com.example.chatzy.databinding.FragmentMainBinding;
 import com.example.chatzy.listeners.ConversionListener;
@@ -39,6 +40,7 @@ import com.example.chatzy.utilities.PreferenceManager;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -116,6 +118,34 @@ public class MainFragment extends Fragment implements ConversionListener, GroupL
         binding.imageGroups.setOnClickListener(v -> {
             showDialogCreateGroup();
         });
+        binding.imageSignOut.setOnClickListener(v -> signOut());
+    }
+    private void signOut() {
+        showToast("Signing out....");
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        DocumentReference documentReference =
+                database.collection(Constants.KEY_COLLECTION_USERS).document(
+                        preferenceManager.getString(Constants.KEY_USER_ID)
+                );
+        HashMap<String, Object> updates = new HashMap<>();
+        updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
+        documentReference.update(updates)
+                .addOnSuccessListener(unused -> {
+                    preferenceManager.clear();
+                    startActivity(new Intent(getActivity(), SignInActivity.class));
+                    if (getActivity() != null) {
+                        getActivity().finish();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    preferenceManager.clear();
+                    startActivity(new Intent(getActivity(), SignInActivity.class));
+                    if (getActivity() != null) {
+                        getActivity().finish();
+                    }
+                });
+//                .addOnFailureListener(e -> showToast("Unable to sign out!"));
+
     }
 
     private void showDialogCreateGroup() {
